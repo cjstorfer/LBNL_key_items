@@ -157,7 +157,8 @@ class BaseLasagneClassifier(BaseEstimator, ClassifierMixin):
                 pur, comp = self.eval_purity_completeness(Xval, yval)
                 print("Iteration : %d -> [Validation] Purity: %f ; Completeness: %f"%(niter, pur, comp))
                 nval = Xval.shape[0]
-                pur, comp = self.eval_purity_completeness(X[0:nval], y[0:nval])
+                # pur, comp = self.eval_purity_completeness(X[0:nval], y[0:nval])
+                pur, comp = self.eval_purity_completeness(X, y) #CS
                 print("Iteration : %d -> [Training] Purity: %f ; Completeness: %f"%(niter, pur, comp))
 
             start_time = time.time()
@@ -322,7 +323,7 @@ class BaseLasagneClassifier(BaseEstimator, ClassifierMixin):
 
         q = np.reshape(self.predict_proba(X), (-1, 1))
 
-        t = np.linspace(0,1,1000)
+        t = np.linspace(0,1,10000000) #CS: origionaly 1000
 
         upper, lower = 1, 0
 
@@ -340,7 +341,7 @@ class BaseLasagneClassifier(BaseEstimator, ClassifierMixin):
     def eval_AUC(self, X, y, epoch):
         tpr, fpr, t = self.eval_ROC(X,y)
         self.roc_auc[epoch] = metrics.auc(fpr, tpr)
-        print self.roc_auc
+        print self.roc_auc[epoch]
         if (epoch == (self.n_epochs-1)):
             roc_auc = np.array(list(self.roc_auc.items()), dtype=float)
             roc_auc = roc_auc.T
